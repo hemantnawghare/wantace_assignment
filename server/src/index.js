@@ -14,10 +14,23 @@ dotenv.config();
 
 const app = express();
 const PORT = Number(process.env.PORT || 4000);
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+const CLIENT_URL = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
+const allowedOrigins = new Set([
+  CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://wantace-assignment-client.vercel.app'
+]);
 
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.has(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());

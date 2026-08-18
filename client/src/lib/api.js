@@ -1,4 +1,5 @@
-export const API_BASE = '/api';
+const DEFAULT_API_BASE = '/api';
+export const API_BASE = import.meta.env.VITE_API_URL || DEFAULT_API_BASE;
 
 function getAuthHeaders(extraHeaders = {}) {
   const token = localStorage.getItem('northline_token');
